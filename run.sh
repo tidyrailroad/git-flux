@@ -53,7 +53,7 @@ project(){
         } &&
             minor(){
                 MAJOR=$(git branch | grep "*" | cut -f 2 -d "-") &&
-                    MINOR=$(git branch | grep "*" | cut -f 3 -d "-") &&
+                    MINOR=$(git branch | grep "*" | cut -f 3 -d "-" | cut -f 1 -d ")") &&
                     NEXT=$(printf %05d $((${MINOR}+1))) &&
                     (! git fetch upstream milestones-${MAJOR}-${NEXT} > /dev/null 2>&1 || (echo "Ineligible for a minor milestone upgrade." && exit 67)) &&
                     git fetch upstream milestones-${MAJOR}-${MINOR} &&
