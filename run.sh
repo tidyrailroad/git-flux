@@ -27,8 +27,9 @@ project(){
         major(){
             MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
                 NEXT=$(printf %05d $((${MAJOR}+1))) &&
-                (! git fetch upstream milestones/${NEXT}/00000 > /dev/null || (echo "Ineligible for a major milestone upgrade." && exit 66)) &&
+                (! git fetch upstream milestones/${NEXT}/00000 > /dev/null 2>&1 || (echo "Ineligible for a major milestone upgrade." && exit 66)) &&
                 MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
+                git fetch upstream milestones/${MAJOR}/${MINOR} &&
                 git checkout upstream/milestones/${MAJOR}/${MINOR} &&
                 git checkout -b milestones/${NEXT}/00000 &&
                 git push authority milestones/${NEXT}/00000 &&
@@ -38,7 +39,7 @@ project(){
                 MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
                     MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
                     NEXT=$(printf %05d $((${MINOR}+1))) &&
-                    (git fetch upstream milestones/${MAJOR}/${NEXT} || (echo "Ineligible for a minor milestone upgrade." && exit 67)) &&
+                    (git fetch upstream milestones/${MAJOR}/${NEXT} > /dev/null 2>&1 || (echo "Ineligible for a minor milestone upgrade." && exit 67)) &&
                     git checkout upstream/milestone/${MAJOR}/${MINOR} &&
                     git checkout -b milestones/${MAJOR}/${NEXT} &&
                     git push authority milestones/${MAJOR}/${NEXT}
