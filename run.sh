@@ -51,7 +51,7 @@ project(){
                     MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
                     findit(){
                         RELEASE=$((${@})) &&
-                            ((git fetch --tags upstream $((${MAJOR})).$((${MINOR})).${RELEASE} > /dev/null && findit $((${RELEASE}+1))) || echo ${RELEASE}) &&
+                            ((git fetch --tags upstream $((${MAJOR})).$((${MINOR})).${RELEASE} > /dev/null 2>&1 && findit $((${RELEASE}+1))) || echo ${RELEASE}) &&
                             true
                     } &&
                     RELEASE=$(findit 0) &&
