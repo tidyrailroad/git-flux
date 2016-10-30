@@ -1,18 +1,26 @@
 #!/bin/sh
 
 function project(){
-    case ${1} in
-        start)
-            git init &&
-                git remote add origin ${1} &&
-                git remote add upstream ${2} &&
-                git remote set-url --push upstream no_push &&
-                git remote add authority ${3} &&
-                git remote set-url --fetch authority no_push &&
-                true
-        ;;
-    esac &&
-    true
+    function start(){
+        git init &&
+            git remote add origin ${1} &&
+            git remote add upstream ${2} &&
+            git remote set-url --push upstream no_push &&
+            git remote add authority ${3} &&
+            git remote set-url --fetch authority no_push &&
+            cat /opt/git-flux/post-commit.sh .git/hooks/post-commit &&
+            chmod 0500 .git/hooks/post-commit &&
+            (git fetch upstream/milestones/00000/00000 || (git checkout -b milestones/00000/00000 && cp /opt/git-flux/COPYING . && cp /opt/git-flux/README.md . && git add README.md COPYING && git commit -m "init" && git push authority milestones/00000/00000)) &&
+            true
+    } &&
+        case ${1} in
+            start)
+                shift &&
+                    start ${@} &&
+                    true
+            ;;
+        esac &&
+        true
 } &&
     function milestone(){
         function major(){
@@ -22,7 +30,7 @@ function project(){
                 MINOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 3 --delimiter "/") &&
                 git checkout upstream/milestones/${MAJOR}/${MINOR} &&
                 git checkout -b milestones/${NEXT}/00000 &&
-                git push origin milestones/${NEXT}/00000 &&
+                git push authority milestones/${NEXT}/00000 &&
                 true
         } &&
             function minor(){
@@ -32,7 +40,7 @@ function project(){
                     (git fetch upstream milestones/${MAJOR}/${NEXT} || (echo "Ineligible for a minor milestone upgrade." && exit 67)) &&
                     git checkout upstream/milestone/${MAJOR}/${MINOR} &&
                     git checkout -b milestones/${MAJOR}/${NEXT} &&
-                    git push origin milestones/${MAJOR}/${NEXT}
+                    git push authority milestones/${MAJOR}/${NEXT}
                     true
             } &&
             function release(){
