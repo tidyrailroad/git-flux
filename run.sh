@@ -135,6 +135,7 @@ project(){
                     git fetch upstream milestones-${MAJOR}-${MINOR} &&
                     BRANCH=issues-${MAJOR}-${MINOR}-${ISSUE}/$(uuidgen) &&
                     git checkout -b ${BRANCH} &&
+                    git rebase upstream/milestones-${MAJOR}-${MINOR} &&
                     git push origin ${BRANCH} &&
                     true
             } &&
@@ -145,7 +146,7 @@ project(){
                     ISSUE=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "-") &&
                     BRANCH=requests-${MAJOR}-${MINOR}-${ISSUE} &&
                     git checkout -b ${BRANCH} &&
-                    git reset milestones-${MAJOR}-${MINOR} &&
+                    git reset upstream/milestones-${MAJOR}-${MINOR} &&
                     git commit &&
                     git push authority ${BRANCH} &&
                     true
