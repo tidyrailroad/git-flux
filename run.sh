@@ -41,7 +41,7 @@ project(){
                     NEXT=$(printf %05d $((${MINOR}+1))) &&
                     (! git fetch upstream milestones/${MAJOR}/${NEXT} > /dev/null 2>&1 || (echo "Ineligible for a minor milestone upgrade." && exit 67)) &&
                     git fetch upstream milestones/${MAJOR}/${MINOR} &&
-                    git checkout upstream/milestone/${MAJOR}/${MINOR} &&
+                    git checkout upstream/milestones/${MAJOR}/${MINOR} &&
                     git checkout -b milestones/${MAJOR}/${NEXT} &&
                     git push authority milestones/${MAJOR}/${NEXT}
                     true
