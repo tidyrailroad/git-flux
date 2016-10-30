@@ -60,7 +60,7 @@ project(){
                     git checkout upstream/milestones-${MAJOR}-${MINOR} &&
                     git checkout -b milestones-${MAJOR}-${NEXT} &&
                     git push authority milestones-${MAJOR}-${NEXT} &&
-                    git fetch upstream milestones-${MAJOR}-${NEX} &&
+                    git fetch upstream milestones-${MAJOR}-${NEXT} &&
                     git checkout upstream/milestones-${MAJOR}-${NEXT} &&
                     git branch -D milestones-${MAJOR}-${NEXT} &&
                     true
