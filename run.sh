@@ -3,6 +3,13 @@
 function project(){
     case ${1} in
         start)
+            git init &&
+                git remote add origin ${1} &&
+                git remote add upstream ${2} &&
+                git remote set-url --push upstream no_push &&
+                git remote add authority ${3} &&
+                git remote set-url --fetch authority no_push &&
+                true
         ;;
     esac &&
     true
@@ -31,7 +38,15 @@ function project(){
             function release(){
                 MAJOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 2 --delimiter "/") &&
                     MINOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 3 --delimiter "/") &&
-                    git fetch upstream/${MAJOR}/${MINOR}/ &&
+                    function findit(){
+                        RELEASE=$((${@})) &&
+                            ((git fetch --tags upstream $((${MAJOR})).$((${MINOR})).${RELEASE} > /dev/null && findit $((${RELEASE}+1))) || echo ${RELEASE}) &&
+                            true
+                    } &&
+                    RELEASE=$(findit 0) &&
+                    git fetch upstream/milestones/${MAJOR}/${MINOR} &&
+                    git tag -a $((${MAJOR})).$((${MINOR})).${RELEASE} -m "Version $((${MAJOR})).$((${MINOR})).${RELEASE}"
+                    git push --follow-tags authority $((${MAJOR})).$((${MINOR})).${RELEASE} &&
                     true
             } &&
             case ${1} in
@@ -82,7 +97,7 @@ function project(){
                     git checkout -b ${BRANCH} &&
                     git reset milestones/${MAJOR}/${MINOR} &&
                     git commit &&
-                    git push origin ${BRANCH} &&
+                    git push authority ${BRANCH} &&
                     true
             } &&
             case ${1} in
