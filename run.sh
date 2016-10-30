@@ -119,9 +119,7 @@ project(){
                 true
     } &&
     issue(){
-        echo B &&
         start(){
-            echo F &&
             MILESTONE=$(printf %05d ${1})-$(printf %05d ${2}) &&
                 git fetch upstream milestones-${MILESTONE} &&
                 git checkout upstream/milestones-${MILESTONE} &&
@@ -129,7 +127,7 @@ project(){
                 true
         } &&
             rebase(){
-                ([ z "$(git clean -n -d)" ] || (echo "There are files not under version control." && exit 64)) &&
+                ([ -z "$(git clean -n -d)" ] || (echo "There are files not under version control." && exit 64)) &&
                     ([ -z "$(git diff)" ] || (echo "There are uncommitted changes." && exit 65)) &&
                     MAJOR=$(git branch | grep "*" | cut -f 2 -d "-") &&
                     MINOR=$(git branch | grep "*" | cut -f 3 -d "-" | cut -f 1 -d ")") &&
@@ -156,11 +154,9 @@ project(){
                 git checkout issues/$(printf %05d ${1})-$(printf %05d ${2})-$(printf %0fd ${3})-${4} &&
                     true
             } &&
-            echo D &&
             case ${1} in
                 start)
                     shift &&
-                        echo E &&
                         start ${@} &&
                         true
                     ;;
@@ -194,7 +190,6 @@ project(){
         ;;
         issue)
             shift &&
-                echo A &&
                 issue ${@} &&
                 true
     esac &&
