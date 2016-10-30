@@ -141,9 +141,9 @@ project(){
             } &&
             finish(){
                 rebase &&
-                    MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 1 -d "-") &&
-                    MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "-") &&
-                    ISSUE=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "-") &&
+                    MAJOR=$(git branch | grep "*" | cut -f 1 -d "-") &&
+                    MINOR=$(git branch | grep "*" | cut -f 2 -d "-") &&
+                    ISSUE=$(git branch | grep "*" | cut -f 3 -d "-") &&
                     BRANCH=requests-${MAJOR}-${MINOR}-${ISSUE} &&
                     git checkout -b ${BRANCH} &&
                     git reset upstream/milestones-${MAJOR}-${MINOR} &&
