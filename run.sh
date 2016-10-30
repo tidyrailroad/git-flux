@@ -148,10 +148,19 @@ project(){
                     BRANCH=requests-${MAJOR}-${MINOR}-${ISSUE} &&
                     git checkout -b ${BRANCH} &&
                     git reset --soft upstream/milestones-${MAJOR}-${MINOR} &&
-                    git commit &&
-                    git push authority ${BRANCH} &&
-                    git checkout ${OLD} &&
-                    git branch -D ${BRANCH} &&
+                    (
+                        (
+                            git commit &&
+                                git push authority ${BRANCH} &&
+                                git checkout ${OLD} &&
+                                git branch -D ${BRANCH} &&
+                                true
+                        ) || (
+                            git checkout ${OLD} &&
+                                git branch -D ${BRANCH} &&
+                                true
+                        )
+                    ) &&
                     true
             } &&
             checkout(){
