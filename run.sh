@@ -113,6 +113,10 @@ project(){
                         release ${@} &&
                         true
                 ;;
+                checkout)
+                    shift &&
+                        checkout ${@} &&
+                        true
             esac &&
                 true
     } &&
