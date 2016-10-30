@@ -82,6 +82,21 @@ project(){
                     git checkout ${CURRENT} &&
                     true
             } &&
+            checkout(){
+                case ${#} in
+                    2)
+                        git fetch upstream milestones-$(printf %05d ${1})-$(printf %05d ${2}) &&
+                            git checkout upstream/milestones-$(printf %05d ${1})-$(printf %05d ${2}) &&
+                            true
+                    ;;
+                    3)
+                        git fetch --tags upstream tags/${1}.${2}.${3} &&
+                            git checkout upstream/tags/${1}.${2}.${3} &&
+                            true
+                    ;;
+                esac &&
+                    true
+            } &&
             case ${1} in
                 major)
                     shift &&
