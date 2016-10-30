@@ -68,7 +68,7 @@ project(){
             release(){
                 CURRENT=$(git rev-parse --abbrev-ref HEAD) &&
                     MAJOR=$(git branch | grep "*" | cut -f 2 -d "-") &&
-                    MINOR=$(git branch | grep "*" | cut -f 3 -d "-") &&
+                    MINOR=$(git branch | grep "*" | cut -f 3 -d "-" | cut -f 1 -d ")") &&
                     findit(){
                         RELEASE=$((${@})) &&
                             ((git fetch --tags upstream $((${MAJOR})).$((${MINOR})).${RELEASE} > /dev/null 2>&1 && findit $((${RELEASE}+1))) || echo ${RELEASE}) &&
