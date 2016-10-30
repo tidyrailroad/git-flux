@@ -11,7 +11,20 @@ project(){
             git config user.name "${5}" &&
             cat /opt/git-flux/post-commit.sh > .git/hooks/post-commit &&
             chmod 0500 .git/hooks/post-commit &&
-            (git fetch upstream milestones/00000/00000 && git checkout upstream/milestones/00000/000000 || (git checkout -b milestones/00000/00000 && cp /opt/git-flux/COPYING . && cp /opt/git-flux/README.md . && git add README.md COPYING && git commit -m "init" && git push authority milestones/00000/00000 && git fetch upstream milestones/00000/00000 && git checkout upstream/milestones/000000/000000 && git branch -D milestones/00000/00000)) &&
+            (git fetch upstream milestones-00000-00000 && git checkout upstream/milestones-00000-000000 ||
+            (
+                git checkout -b milestones-00000-00000 && 
+                    cp /opt/git-flux/COPYING . && 
+                    cp /opt/git-flux/README.md . && 
+                    git add README.md COPYING && 
+                    git commit -m "init" && 
+                    git push authority milestones-00000-00000 && 
+                    git fetch upstream milestones-00000-00000 && 
+                    git checkout upstream/milestones-00000-00000 && 
+                    git branch -D milestones-00000-00000 &&
+                    true
+                )
+            ) &&
             true
     } &&
         case ${1} in
@@ -27,29 +40,29 @@ project(){
         major(){
             MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
                 NEXT=$(printf %05d $((${MAJOR}+1))) &&
-                (! git fetch upstream milestones/${NEXT}/00000 > /dev/null 2>&1 || (echo "Ineligible for a major milestone upgrade." && exit 66)) &&
+                (! git fetch upstream milestones-${NEXT}-00000 > /dev/null 2>&1 || (echo "Ineligible for a major milestone upgrade." && exit 66)) &&
                 MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
-                git fetch upstream milestones/${MAJOR}/${MINOR} &&
-                git checkout upstream/milestones/${MAJOR}/${MINOR} &&
-                git checkout -b milestones/${NEXT}/00000 &&
-                git push authority milestones/${NEXT}/00000 &&
-                git fetch upstream milestones/${NEXT}/00000 &&
-                git checkout upstream/milestones/${NEXT}/00000 &&
-                git branch -D milestones/${NEXT}/000000 &&
+                git fetch upstream milestones-${MAJOR}-${MINOR} &&
+                git checkout upstream/milestones-${MAJOR}-${MINOR} &&
+                git checkout -b milestones-${NEXT}-00000 &&
+                git push authority milestones-${NEXT}-00000 &&
+                git fetch upstream milestones-${NEXT}-00000 &&
+                git checkout upstream/milestones-${NEXT}-00000 &&
+                git branch -D milestones-${NEXT}-000000 &&
                 true
         } &&
             minor(){
                 MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
                     MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
                     NEXT=$(printf %05d $((${MINOR}+1))) &&
-                    (! git fetch upstream milestones/${MAJOR}/${NEXT} > /dev/null 2>&1 || (echo "Ineligible for a minor milestone upgrade." && exit 67)) &&
-                    git fetch upstream milestones/${MAJOR}/${MINOR} &&
-                    git checkout upstream/milestones/${MAJOR}/${MINOR} &&
-                    git checkout -b milestones/${MAJOR}/${NEXT} &&
-                    git push authority milestones/${MAJOR}/${NEXT} &&
-                    git fetch upstream milestones ${MAJOR}/${NEX} &&
-                    git checkout upstream/milestones/${MAJOR}/${NEXT} &&
-                    git branch -D milestones/${MAJOR}/${NEXT} &&
+                    (! git fetch upstream milestones-${MAJOR}-${NEXT} > /dev/null 2>&1 || (echo "Ineligible for a minor milestone upgrade." && exit 67)) &&
+                    git fetch upstream milestones-${MAJOR}-${MINOR} &&
+                    git checkout upstream/milestones-${MAJOR}-${MINOR} &&
+                    git checkout -b milestones-${MAJOR}-${NEXT} &&
+                    git push authority milestones-${MAJOR}-${NEXT} &&
+                    git fetch upstream milestones ${MAJOR}-${NEX} &&
+                    git checkout upstream/milestones-${MAJOR}-${NEXT} &&
+                    git branch -D milestones-${MAJOR}-${NEXT} &&
                     true
             } &&
             release(){
@@ -62,8 +75,8 @@ project(){
                             true
                     } &&
                     RELEASE=$(findit 0) &&
-                    git fetch upstream milestones/${MAJOR}/${MINOR} &&
-                    git checkout upstream/milestones/${MAJOR}/${MINOR} &&
+                    git fetch upstream milestones-${MAJOR}-${MINOR} &&
+                    git checkout upstream/milestones-${MAJOR}-${MINOR} &&
                     git tag -a $((${MAJOR})).$((${MINOR})).${RELEASE} -m "Version $((${MAJOR})).$((${MINOR})).${RELEASE}"
                     git push --follow-tags authority $((${MAJOR})).$((${MINOR})).${RELEASE} &&
                     git checkout ${CURRENT} &&
@@ -91,7 +104,7 @@ project(){
     issue(){
         start(){
             MILESTONE=/$(printf %05d ${1})/$(printf %05d ${2}) &&
-                git fetch upstream milestones/${MILESTONE} &&
+                git fetch upstream milestones-${MILESTONE} &&
                 git checkout upstream/${MILESTONE} &&
                 git checkout -b issues/${MILESTONE}/$(printf %05d ${3})/$(uuidgen) &&
                 true
@@ -102,8 +115,8 @@ project(){
                     MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
                     MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
                     ISSUE=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
-                    git fetch upstream milestones/${MAJOR}/${MINOR} &&
-                    BRANCH=issues/${MAJOR}/${MINOR}/${ISSUE}/$(uuidgen) &&
+                    git fetch upstream milestones-${MAJOR}-${MINOR} &&
+                    BRANCH=issues/${MAJOR}-${MINOR}-${ISSUE}/$(uuidgen) &&
                     git checkout -b ${BRANCH} &&
                     git push origin ${BRANCH} &&
                     true
@@ -113,9 +126,9 @@ project(){
                     MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
                     MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
                     ISSUE=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
-                    BRANCH=merge-requests/${MAJOR}/${MINOR}/${ISSUE} &&
+                    BRANCH=requests-${MAJOR}-${MINOR}-${ISSUE} &&
                     git checkout -b ${BRANCH} &&
-                    git reset milestones/${MAJOR}/${MINOR} &&
+                    git reset milestones-${MAJOR}-${MINOR} &&
                     git commit &&
                     git push authority ${BRANCH} &&
                     true
