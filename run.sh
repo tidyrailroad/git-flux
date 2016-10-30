@@ -129,19 +129,19 @@ project(){
                 true
         } &&
             rebase(){
-                ([ ! -z "$(git clean -n -d)" ] || (echo "There are files not under version control." && exit 64)) &&
-                    ([ ! -z "$(git diff)" ] || (echo "There are uncommitted changes." && exit 65)) &&
+                ([ z "$(git clean -n -d)" ] || (echo "There are files not under version control." && exit 64)) &&
+                    ([ -z "$(git diff)" ] || (echo "There are uncommitted changes." && exit 65)) &&
                     MAJOR=$(git branch | grep "*" | cut -f 2 -d "-") &&
                     MINOR=$(git branch | grep "*" | cut -f 3 -d "-" | cut -f 1 -d ")") &&
                     ISSUE=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "-") &&
                     git fetch upstream milestones-${MAJOR}-${MINOR} &&
-                    BRANCH=issues/${MAJOR}-${MINOR}-${ISSUE}/$(uuidgen) &&
+                    BRANCH=issues-${MAJOR}-${MINOR}-${ISSUE}/$(uuidgen) &&
                     git checkout -b ${BRANCH} &&
                     git push origin ${BRANCH} &&
                     true
             } &&
             finish(){
-                rebase_issue &&
+                rebase &&
                     MAJOR=$(git branch | grep "*" | cut -f 2 -d "-") &&
                     MINOR=$(git branch | grep "*" | cut -f 3 -d "-" | cut -f 1 -d ")") &&
                     ISSUE=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "-") &&
