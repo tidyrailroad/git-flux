@@ -55,7 +55,8 @@ project(){
                             true
                     } &&
                     RELEASE=$(findit 0) &&
-                    git fetch upstream/milestones/${MAJOR}/${MINOR} &&
+                    git fetch upstream milestones/${MAJOR}/${MINOR} &&
+                    git checkout upstream/milestones/${MAJOR}/${MINOR} &&
                     git tag -a $((${MAJOR})).$((${MINOR})).${RELEASE} -m "Version $((${MAJOR})).$((${MINOR})).${RELEASE}"
                     git push --follow-tags authority $((${MAJOR})).$((${MINOR})).${RELEASE} &&
                     true
