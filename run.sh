@@ -25,18 +25,18 @@ project(){
 } &&
     milestone(){
         major(){
-            MAJOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 2 --delimiter "/") &&
+            MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
                 NEXT=$(printf %05d $((${MAJOR}+1))) &&
                 (git fetch upstream milestones/${NEXT}/00000 || (echo "Ineligible for a major milestone upgrade." && exit 66)) &&
-                MINOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 3 --delimiter "/") &&
+                MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
                 git checkout upstream/milestones/${MAJOR}/${MINOR} &&
                 git checkout -b milestones/${NEXT}/00000 &&
                 git push authority milestones/${NEXT}/00000 &&
                 true
         } &&
             minor(){
-                MAJOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 2 --delimiter "/") &&
-                    MINOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 3 --delimiter "/") &&
+                MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
+                    MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
                     NEXT=$(printf %05d $((${MINOR}+1))) &&
                     (git fetch upstream milestones/${MAJOR}/${NEXT} || (echo "Ineligible for a minor milestone upgrade." && exit 67)) &&
                     git checkout upstream/milestone/${MAJOR}/${MINOR} &&
@@ -45,8 +45,8 @@ project(){
                     true
             } &&
             release(){
-                MAJOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 2 --delimiter "/") &&
-                    MINOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 3 --delimiter "/") &&
+                MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
+                    MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
                     findit(){
                         RELEASE=$((${@})) &&
                             ((git fetch --tags upstream $((${MAJOR})).$((${MINOR})).${RELEASE} > /dev/null && findit $((${RELEASE}+1))) || echo ${RELEASE}) &&
@@ -88,9 +88,9 @@ project(){
             rebase(){
                 ([ ! -z "$(git clean -n -d)" ] || (echo "There are files not under version control." && exit 64)) &&
                     ([ ! -z "$(git diff)" ] || (echo "There are uncommitted changes." && exit 65)) &&
-                    MAJOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 2 --delimiter "/") &&
-                    MINOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 3 --delimiter "/") &&
-                    ISSUE=$(git rev-parse --abbrev-ref HEAD | cut --fields 3 --delimiter "/") &&
+                    MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
+                    MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
+                    ISSUE=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
                     git fetch upstream milestones/${MAJOR}/${MINOR} &&
                     BRANCH=issues/${MAJOR}/${MINOR}/${ISSUE}/$(uuidgen) &&
                     git checkout -b ${BRANCH} &&
@@ -99,9 +99,9 @@ project(){
             } &&
             finish(){
                 rebase_issue &&
-                    MAJOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 2 --delimiter "/") &&
-                    MINOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 3 --delimiter "/") &&
-                    ISSUE=$(git rev-parse --abbrev-ref HEAD | cut --fields 3 --delimiter "/") &&
+                    MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
+                    MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
+                    ISSUE=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
                     BRANCH=merge-requests/${MAJOR}/${MINOR}/${ISSUE} &&
                     git checkout -b ${BRANCH} &&
                     git reset milestones/${MAJOR}/${MINOR} &&
