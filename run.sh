@@ -146,7 +146,7 @@ project(){
                     ISSUE=$(git branch | grep "*" | cut -f 4 -d "-") &&
                     BRANCH=requests-${MAJOR}-${MINOR}-${ISSUE} &&
                     git checkout -b ${BRANCH} &&
-                    git reset upstream/milestones-${MAJOR}-${MINOR} &&
+                    git reset --soft upstream/milestones-${MAJOR}-${MINOR} &&
                     git commit &&
                     git push authority ${BRANCH} &&
                     true
