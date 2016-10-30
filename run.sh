@@ -1,7 +1,7 @@
 #!/bin/sh
 
-function project(){
-    function start(){
+project(){
+    start(){
         git init &&
             git remote add origin ${1} &&
             git remote add upstream ${2} &&
@@ -22,8 +22,8 @@ function project(){
         esac &&
         true
 } &&
-    function milestone(){
-        function major(){
+    milestone(){
+        major(){
             MAJOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 2 --delimiter "/") &&
                 NEXT=$(printf %05d $((${MAJOR}+1))) &&
                 (git fetch upstream milestones/${NEXT}/00000 || (echo "Ineligible for a major milestone upgrade." && exit 66)) &&
@@ -33,7 +33,7 @@ function project(){
                 git push authority milestones/${NEXT}/00000 &&
                 true
         } &&
-            function minor(){
+            minor(){
                 MAJOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 2 --delimiter "/") &&
                     MINOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 3 --delimiter "/") &&
                     NEXT=$(printf %05d $((${MINOR}+1))) &&
@@ -43,10 +43,10 @@ function project(){
                     git push authority milestones/${MAJOR}/${NEXT}
                     true
             } &&
-            function release(){
+            release(){
                 MAJOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 2 --delimiter "/") &&
                     MINOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 3 --delimiter "/") &&
-                    function findit(){
+                    findit(){
                         RELEASE=$((${@})) &&
                             ((git fetch --tags upstream $((${MAJOR})).$((${MINOR})).${RELEASE} > /dev/null && findit $((${RELEASE}+1))) || echo ${RELEASE}) &&
                             true
@@ -76,15 +76,15 @@ function project(){
             esac &&
                 true
     } &&
-    function issue(){
-        function start(){
+    issue(){
+        start(){
             MILESTONE=/$(printf %05d ${1})/$(printf %05d ${2}) &&
                 git fetch upstream milestones/${MILESTONE} &&
                 git checkout upstream/${MILESTONE} &&
                 git checkout -b issues/${MILESTONE}/$(printf %05d ${3})/$(uuidgen) &&
                 true
         } &&
-            function rebase(){
+            rebase(){
                 ([ ! -z "$(git clean -n -d)" ] || (echo "There are files not under version control." && exit 64)) &&
                     ([ ! -z "$(git diff)" ] || (echo "There are uncommitted changes." && exit 65)) &&
                     MAJOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 2 --delimiter "/") &&
@@ -96,7 +96,7 @@ function project(){
                     git push origin ${BRANCH} &&
                     true
             } &&
-            function finish(){
+            finish(){
                 rebase_issue &&
                     MAJOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 2 --delimiter "/") &&
                     MINOR=$(git rev-parse --abbrev-ref HEAD | cut --fields 3 --delimiter "/") &&
