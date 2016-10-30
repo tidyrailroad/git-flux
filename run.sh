@@ -7,7 +7,7 @@ project(){
             git remote add upstream ${2} &&
             git remote set-url --push upstream no_push &&
             git remote add authority ${3} &&
-            cat /opt/git-flux/post-commit.sh .git/hooks/post-commit &&
+            cat /opt/git-flux/post-commit.sh > .git/hooks/post-commit &&
             chmod 0500 .git/hooks/post-commit &&
             (git fetch upstream/milestones/00000/00000 || (git checkout -b milestones/00000/00000 && cp /opt/git-flux/COPYING . && cp /opt/git-flux/README.md . && git add README.md COPYING && git commit -m "init" && git push authority milestones/00000/00000)) &&
             true
