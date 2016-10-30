@@ -11,7 +11,7 @@ project(){
             git config user.name "${5}" &&
             cat /opt/git-flux/post-commit.sh > .git/hooks/post-commit &&
             chmod 0500 .git/hooks/post-commit &&
-            (git fetch upstream milestones-00000-00000 && git checkout upstream/milestones-00000-000000 ||
+            (git fetch upstream milestones-00000-00000 && git checkout upstream/milestones-00000-00000 ||
             (
                 git checkout -b milestones-00000-00000 && 
                     cp /opt/git-flux/COPYING . && 
@@ -48,7 +48,7 @@ project(){
                 git push authority milestones-${NEXT}-00000 &&
                 git fetch upstream milestones-${NEXT}-00000 &&
                 git checkout upstream/milestones-${NEXT}-00000 &&
-                git branch -D milestones-${NEXT}-000000 &&
+                git branch -D milestones-${NEXT}-00000 &&
                 true
         } &&
             minor(){
