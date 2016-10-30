@@ -11,7 +11,7 @@ project(){
             git config user.name "${5}" &&
             cat /opt/git-flux/post-commit.sh > .git/hooks/post-commit &&
             chmod 0500 .git/hooks/post-commit &&
-            (git fetch upstream/milestones/00000/00000 || (git checkout -b milestones/00000/00000 && cp /opt/git-flux/COPYING . && cp /opt/git-flux/README.md . && git add README.md COPYING && git commit -m "init" && git push authority milestones/00000/00000)) &&
+            (git fetch upstream milestones/00000/00000 && git checkout upstream/milestones/00000/000000 || (git checkout -b milestones/00000/00000 && cp /opt/git-flux/COPYING . && cp /opt/git-flux/README.md . && git add README.md COPYING && git commit -m "init" && git push authority milestones/00000/00000)) &&
             true
     } &&
         case ${1} in
@@ -47,7 +47,8 @@ project(){
                     true
             } &&
             release(){
-                MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
+                CURRENT=$(git rev-parse --abbrev-ref HEAD) &&
+                    MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
                     MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
                     findit(){
                         RELEASE=$((${@})) &&
@@ -59,6 +60,7 @@ project(){
                     git checkout upstream/milestones/${MAJOR}/${MINOR} &&
                     git tag -a $((${MAJOR})).$((${MINOR})).${RELEASE} -m "Version $((${MAJOR})).$((${MINOR})).${RELEASE}"
                     git push --follow-tags authority $((${MAJOR})).$((${MINOR})).${RELEASE} &&
+                    git checkout ${CURRENT} &&
                     true
             } &&
             case ${1} in
