@@ -119,11 +119,13 @@ project(){
                 true
     } &&
     issue(){
+        echo B &&
         start(){
-            MILESTONE=/$(printf %05d ${1})/$(printf %05d ${2}) &&
+            echo F &&
+            MILESTONE=$(printf %05d ${1})-$(printf %05d ${2}) &&
                 git fetch upstream milestones-${MILESTONE} &&
-                git checkout upstream/${MILESTONE} &&
-                git checkout -b issues/${MILESTONE}/$(printf %05d ${3})/$(uuidgen) &&
+                git checkout upstream/milestones-${MILESTONE} &&
+                git checkout -b issues/${MILESTONE}-$(printf %05d ${3})-$(uuidgen) &&
                 true
         } &&
             rebase(){
@@ -154,9 +156,11 @@ project(){
                 git checkout issues/$(printf %05d ${1})-$(printf %05d ${2})-$(printf %0fd ${3})-${4} &&
                     true
             } &&
+            echo D &&
             case ${1} in
                 start)
                     shift &&
+                        echo E &&
                         start ${@} &&
                         true
                     ;;
@@ -190,6 +194,7 @@ project(){
         ;;
         issue)
             shift &&
+                echo A &&
                 issue ${@} &&
                 true
     esac &&
