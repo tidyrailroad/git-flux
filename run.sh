@@ -89,7 +89,7 @@ project(){
                     ;;
                     3)
                         git fetch upstream ${1}.${2}.${3} &&
-                            git checkout upstream/${1}.${2}.${3} &&
+                            git checkout ${1}.${2}.${3} &&
                             true
                     ;;
                 esac &&
