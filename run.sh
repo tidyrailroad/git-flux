@@ -129,9 +129,9 @@ project(){
             rebase(){
                 ([ -z "$(git clean -n -d)" ] || (echo "There are files not under version control." && exit 64)) &&
                     ([ -z "$(git diff)" ] || (echo "There are uncommitted changes." && exit 65)) &&
-                    MAJOR=$(git branch | grep "*" | cut -f 1 -d "-") &&
-                    MINOR=$(git branch | grep "*" | cut -f 2 -d "-") &&
-                    ISSUE=$(git branch | grep "*" | cut -f 3 -d "-") &&
+                    MAJOR=$(git branch | grep "*" | cut -f 2 -d "-") &&
+                    MINOR=$(git branch | grep "*" | cut -f 3 -d "-") &&
+                    ISSUE=$(git branch | grep "*" | cut -f 4 -d "-") &&
                     git fetch upstream milestones-${MAJOR}-${MINOR} &&
                     BRANCH=issues-${MAJOR}-${MINOR}-${ISSUE}/$(uuidgen) &&
                     git checkout -b ${BRANCH} &&
@@ -141,9 +141,9 @@ project(){
             } &&
             finish(){
                 rebase &&
-                    MAJOR=$(git branch | grep "*" | cut -f 1 -d "-") &&
-                    MINOR=$(git branch | grep "*" | cut -f 2 -d "-") &&
-                    ISSUE=$(git branch | grep "*" | cut -f 3 -d "-") &&
+                    MAJOR=$(git branch | grep "*" | cut -f 2 -d "-") &&
+                    MINOR=$(git branch | grep "*" | cut -f 3 -d "-") &&
+                    ISSUE=$(git branch | grep "*" | cut -f 4 -d "-") &&
                     BRANCH=requests-${MAJOR}-${MINOR}-${ISSUE} &&
                     git checkout -b ${BRANCH} &&
                     git reset upstream/milestones-${MAJOR}-${MINOR} &&
