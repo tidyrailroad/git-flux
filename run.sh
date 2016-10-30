@@ -133,7 +133,7 @@ project(){
                     MINOR=$(git branch | grep "*" | cut -f 3 -d "-") &&
                     ISSUE=$(git branch | grep "*" | cut -f 4 -d "-") &&
                     git fetch upstream milestones-${MAJOR}-${MINOR} &&
-                    BRANCH=issues-${MAJOR}-${MINOR}-${ISSUE}/$(uuidgen) &&
+                    BRANCH=issues-${MAJOR}-${MINOR}-${ISSUE}-$(uuidgen) &&
                     git checkout -b ${BRANCH} &&
                     git rebase upstream/milestones-${MAJOR}-${MINOR} &&
                     git push origin ${BRANCH} &&
