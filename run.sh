@@ -164,7 +164,7 @@ project(){
                     true
             } &&
             checkout(){
-                git checkout issues/$(printf %05d ${1})-$(printf %05d ${2})-$(printf %0fd ${3})-${4} &&
+                git checkout issues/$(printf %05d ${1})-$(printf %05d ${2})-$(printf %05d ${3})-${4} &&
                     true
             } &&
             case ${1} in
