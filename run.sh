@@ -38,10 +38,10 @@ project(){
 } &&
     milestone(){
         major(){
-            MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
+            MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "-") &&
                 NEXT=$(printf %05d $((${MAJOR}+1))) &&
                 (! git fetch upstream milestones-${NEXT}-00000 > /dev/null 2>&1 || (echo "Ineligible for a major milestone upgrade." && exit 66)) &&
-                MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
+                MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "-") &&
                 git fetch upstream milestones-${MAJOR}-${MINOR} &&
                 git checkout upstream/milestones-${MAJOR}-${MINOR} &&
                 git checkout -b milestones-${NEXT}-00000 &&
@@ -52,8 +52,8 @@ project(){
                 true
         } &&
             minor(){
-                MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
-                    MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
+                MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "-") &&
+                    MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "-") &&
                     NEXT=$(printf %05d $((${MINOR}+1))) &&
                     (! git fetch upstream milestones-${MAJOR}-${NEXT} > /dev/null 2>&1 || (echo "Ineligible for a minor milestone upgrade." && exit 67)) &&
                     git fetch upstream milestones-${MAJOR}-${MINOR} &&
@@ -67,8 +67,8 @@ project(){
             } &&
             release(){
                 CURRENT=$(git rev-parse --abbrev-ref HEAD) &&
-                    MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
-                    MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
+                    MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "-") &&
+                    MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "-") &&
                     findit(){
                         RELEASE=$((${@})) &&
                             ((git fetch --tags upstream $((${MAJOR})).$((${MINOR})).${RELEASE} > /dev/null 2>&1 && findit $((${RELEASE}+1))) || echo ${RELEASE}) &&
@@ -112,9 +112,9 @@ project(){
             rebase(){
                 ([ ! -z "$(git clean -n -d)" ] || (echo "There are files not under version control." && exit 64)) &&
                     ([ ! -z "$(git diff)" ] || (echo "There are uncommitted changes." && exit 65)) &&
-                    MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
-                    MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
-                    ISSUE=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
+                    MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "-") &&
+                    MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "-") &&
+                    ISSUE=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "-") &&
                     git fetch upstream milestones-${MAJOR}-${MINOR} &&
                     BRANCH=issues/${MAJOR}-${MINOR}-${ISSUE}/$(uuidgen) &&
                     git checkout -b ${BRANCH} &&
@@ -123,9 +123,9 @@ project(){
             } &&
             finish(){
                 rebase_issue &&
-                    MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
-                    MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
-                    ISSUE=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
+                    MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "-") &&
+                    MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "-") &&
+                    ISSUE=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "-") &&
                     BRANCH=requests-${MAJOR}-${MINOR}-${ISSUE} &&
                     git checkout -b ${BRANCH} &&
                     git reset milestones-${MAJOR}-${MINOR} &&
