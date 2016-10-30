@@ -141,6 +141,7 @@ project(){
             } &&
             finish(){
                 rebase &&
+                    OLD=$(git rev-parse --abbrev-ref HEAD) &&
                     MAJOR=$(git branch | grep "*" | cut -f 2 -d "-") &&
                     MINOR=$(git branch | grep "*" | cut -f 3 -d "-") &&
                     ISSUE=$(git branch | grep "*" | cut -f 4 -d "-") &&
@@ -149,6 +150,8 @@ project(){
                     git reset --soft upstream/milestones-${MAJOR}-${MINOR} &&
                     git commit &&
                     git push authority ${BRANCH} &&
+                    git checkout ${OLD} &&
+                    git branch -D ${BRANCH} &&
                     true
             } &&
             checkout(){
