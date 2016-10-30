@@ -150,6 +150,10 @@ project(){
                     git push authority ${BRANCH} &&
                     true
             } &&
+            checkout(){
+                git checkout issues/$(printf %05d ${1})-$(printf %05d ${2})-$(printf %0fd ${3})-${4} &&
+                    true
+            } &&
             case ${1} in
                 start)
                     shift &&
@@ -166,6 +170,10 @@ project(){
                             finish ${@} &&
                             true
                     ;;
+                    checkout)
+                        shift &&
+                            checkout ${@} &&
+                            true
                 esac &&
                 true
     } &&
