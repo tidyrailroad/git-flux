@@ -9,6 +9,7 @@ project(){
             git remote add authority ${3} &&
             git config user.email "${4}" &&
             git config user.name "${5}" &&
+            git config core.editor vim &&
             cat /opt/git-flux/post-commit.sh > .git/hooks/post-commit &&
             chmod 0500 .git/hooks/post-commit &&
             (git fetch upstream milestones-00000-00000 && git checkout upstream/milestones-00000-00000 ||
