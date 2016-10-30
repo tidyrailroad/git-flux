@@ -27,7 +27,7 @@ project(){
         major(){
             MAJOR=$(git rev-parse --abbrev-ref HEAD | cut -f 2 -d "/") &&
                 NEXT=$(printf %05d $((${MAJOR}+1))) &&
-                (git fetch upstream milestones/${NEXT}/00000 || (echo "Ineligible for a major milestone upgrade." && exit 66)) &&
+                (! git fetch upstream milestones/${NEXT}/00000 > /dev/null || (echo "Ineligible for a major milestone upgrade." && exit 66)) &&
                 MINOR=$(git rev-parse --abbrev-ref HEAD | cut -f 3 -d "/") &&
                 git checkout upstream/milestones/${MAJOR}/${MINOR} &&
                 git checkout -b milestones/${NEXT}/00000 &&
