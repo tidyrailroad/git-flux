@@ -123,7 +123,7 @@ project(){
             MILESTONE=$(printf %05d ${1})-$(printf %05d ${2}) &&
                 git fetch upstream milestones-${MILESTONE} &&
                 git checkout upstream/milestones-${MILESTONE} &&
-                git checkout -b issues/${MILESTONE}-$(printf %05d ${3})-$(uuidgen) &&
+                git checkout -b issues-${MILESTONE}-$(printf %05d ${3})-$(uuidgen) &&
                 true
         } &&
             rebase(){
